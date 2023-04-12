@@ -22,6 +22,17 @@ def token_required(f):
         return f(*args, **kwargs)
     return decorator
 
+@app.route("/login", methods=['POST'])
+def login():
+    try:
+        data = request.json
+        if (data['username'] == 'admin' and data['password'] == 'admin123'):
+            token = jwt.encode({"user" : data['username'], "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+        else:
+            return jsonify({"msg" : "Wrong Credential", "code": 403}), 403
+    except Exception as e:
+        return jsonify({"msg" : str(e), "code": 403}), 403
+
 @app.route("/", methods=['GET'])
 @token_required
 def root():
