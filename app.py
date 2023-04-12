@@ -28,6 +28,7 @@ def login():
         data = request.json
         if (data['username'] == 'admin' and data['password'] == 'admin123'):
             token = jwt.encode({"user" : data['username'], "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+            return jsonify({"msg" : token.decode("UTF-8"), "code": 403}), 403
         else:
             return jsonify({"msg" : "Wrong Credential", "code": 403}), 403
     except Exception as e:
